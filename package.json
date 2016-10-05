@@ -1,0 +1,36 @@
+{
+  "name": "js-interpreter",
+  "version": "0.1.0",
+  "description": "JS-Interpreter written in TypeScript",
+  "main": "lib",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "npm run build -- --watch",
+    "test": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pawsong/js-interpreter.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pawsong/js-interpreter/issues"
+  },
+  "dependencies": {
+    "@types/acorn": "^1.0.31",
+    "@types/estree": "0.0.34",
+    "acorn": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.45",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-mocha": "^3.0.1",
+    "gulp-typescript": "^3.0.2",
+    "mocha": "^3.1.0",
+    "typescript": "^2.0.3"
+  }
+}

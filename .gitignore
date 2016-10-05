@@ -1,2 +1,5 @@
-
-*.komodoproject
+node_modules
+lib
+typings
+test/typings
+test/*.js

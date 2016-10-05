@@ -1,11 +1,9 @@
-JS-Interpreter
-==============
+# js-interpreter
 
-A sandboxed JavaScript interpreter in JavaScript.  Execute arbitrary JavaScript
-code line by line in isolation and safety.
+**Caution: Currently this fork may contain many breaking changes and experimental features.**
 
-Live demo:
-https://neil.fraser.name/software/JS-Interpreter/
+A [JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter) fork written in TypeScript
 
-Documentation:
-https://neil.fraser.name/software/JS-Interpreter/docs.html
+## License
+
+MIT
