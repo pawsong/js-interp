@@ -1,3 +1,7 @@
+import {
+  AsyncFunction,
+} from './types';
+
 class JsObject {
   notConfigurable: any;
   notEnumerable: any;
@@ -13,7 +17,7 @@ class JsObject {
   parentScope: any;
   node: any;
   nativeFunc: any;
-  asyncFunc: any;
+  asyncFunc: AsyncFunction;
 
   /**
    * Class for an object.

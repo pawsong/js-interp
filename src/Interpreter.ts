@@ -7,6 +7,9 @@ import {
 import Primitive from './Primitive';
 import JsObject from './JsObject';
 import * as utils from './utils';
+import {
+  AsyncFunction,
+} from './types';
 
 /**
  * @const {!Object} Configuration used for all Acorn parsing.
@@ -47,7 +50,7 @@ export interface State {
   scope?: any;
   thisExpression?: any;
   done?: boolean;
-  func_?: any;
+  func_?: JsObject;
   funcThis_?: any;
   arguments?: any;
   doneArgs_?: boolean;
@@ -194,9 +197,9 @@ export class Interpreter {
     this.ast = code;
     this.stateStack = [{
       node: this.ast,
-      scope: scope,
+      scope,
       thisExpression: scope,
-      done: false
+      done: false,
     }];
   }
 
@@ -1805,6 +1808,7 @@ export class Interpreter {
         return strs.join(',');
       };
     }
+
     return obj;
   };
 
@@ -1859,7 +1863,7 @@ export class Interpreter {
    * @param {!Function} nativeFunc JavaScript function.
    * @return {!JsObject} New function.
    */
-  createNativeFunction(nativeFunc: any) {
+  createNativeFunction(nativeFunc: Function) {
     const func = this.createObject(this.FUNCTION);
     func.nativeFunc = nativeFunc;
     this.setProperty(func, 'length', this.createPrimitive(nativeFunc.length), READONLY_DESCRIPTOR);
@@ -1871,7 +1875,7 @@ export class Interpreter {
    * @param {!Function} asyncFunc JavaScript function.
    * @return {!JsObject} New function.
    */
-  createAsyncFunction(asyncFunc: any) {
+  createAsyncFunction(asyncFunc: AsyncFunction) {
     const func = this.createObject(this.FUNCTION);
     func.asyncFunc = asyncFunc;
     this.setProperty(func, 'length', this.createPrimitive(asyncFunc.length), READONLY_DESCRIPTOR);
@@ -2756,7 +2760,7 @@ export class Interpreter {
         this.setProperty(scope, 'arguments', argsList);
         const funcState = {
           node: state.func_.node.body,
-          scope: scope,
+          scope,
           thisExpression: state.funcThis_
         };
         this.stateStack.unshift(funcState);
@@ -2764,11 +2768,14 @@ export class Interpreter {
       } else if (state.func_.nativeFunc) {
         state.value = state.func_.nativeFunc.apply(state.funcThis_, state.arguments);
       } else if (state.func_.asyncFunc) {
-        const argsWithCallback = state.arguments.concat((value: any) => {
-          state.value = value || this.UNDEFINED;
-          this.paused_ = false;
-        });
-        state.func_.asyncFunc.apply(state.funcThis_, argsWithCallback);
+        (<PromiseLike<any>> state.func_.asyncFunc.apply(state.funcThis_, state.arguments))
+          .then(value => {
+            this.paused_ = false;
+            state.value = value || this.UNDEFINED;
+          }, error => {
+            this.paused_ = false;
+            this.throwException(this.ERROR, error.message);
+          });
         this.paused_ = true;
         return;
       } else if (state.func_.eval) {

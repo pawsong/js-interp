@@ -2,6 +2,20 @@ import { expect } from 'chai';
 import fs = require('fs');
 import { Interpreter } from '../lib';
 
+function waitFor(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitUntil(check: () => boolean) {
+  return new Promise((resolve) => {
+    const handle = setInterval(() => {
+      if (check()) return;
+      clearInterval(handle);
+      resolve();
+    }, 1);
+  });
+}
+
 describe('Global scope', () => {
   describe('null', () => {
     it('should return null', () => {
@@ -147,6 +161,38 @@ describe('Examples', () => {
         expect(interpreter.value.properties[i].type).to.equal('number');
         expect(interpreter.value.properties[i].data).to.equal(expected[i]);
       }
+    });
+  });
+});
+
+describe('Interpreter', () => {
+  describe('#createNativeFunction', () => {
+    it('should bind a native function', () => {
+      const interpreter = new Interpreter('boundFunction()', (interpreter, scope) => {
+        interpreter.setProperty(scope, 'boundFunction', interpreter.createNativeFunction(() => {
+          return interpreter.createPrimitive(10);
+        }));
+      });
+
+      interpreter.run();
+
+      expect(interpreter.value.type).to.equal('number');
+      expect(interpreter.value.data).to.equal(10);
+    });
+  });
+
+  describe('#createAsyncFunction', () => {
+    it('should bind a async function', async () => {
+      const interpreter = new Interpreter('boundFunction()', (interpreter, scope) => {
+        interpreter.setProperty(scope, 'boundFunction', interpreter.createAsyncFunction(() => {
+          return waitFor(0).then(() => interpreter.createPrimitive(10));
+        }));
+      });
+
+      await waitUntil(() => interpreter.run());
+
+      expect(interpreter.value.type).to.equal('number');
+      expect(interpreter.value.data).to.equal(10);
     });
   });
 });
