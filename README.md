@@ -6,4 +6,4 @@ A [JS-Interpreter](https://github.com/NeilFraser/JS-Interpreter) fork written in
 
 ## License
 
-MIT
+Apache-2.0
