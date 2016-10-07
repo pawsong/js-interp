@@ -147,6 +147,34 @@ describe('Global scope', () => {
   });
 });
 
+describe('Error', () => {
+  describe('throw', () => {
+    it('should throw the error', () => {
+      const code = `throw new Error('something wrong')`;
+      const interpreter = new Interpreter(code);
+      expect(() => interpreter.run()).to.throw(Error, 'something wrong');
+    });
+  });
+
+  describe('try...catch', () => {
+    it('should catch the error thrown in try statements', () => {
+      const code =
+`var error;
+try {
+  throw new Error('something wrong');
+} catch (err) {
+  error = err;
+}
+error;`;
+      const interpreter = new Interpreter(code);
+      interpreter.run();
+      expect(interpreter.value.parent).to.equal(interpreter.ERROR);
+      expect(interpreter.value.properties.message.type).to.equal('string');
+      expect(interpreter.value.properties.message.data).to.equal('something wrong');
+    });
+  });
+});
+
 describe('Interpreter', () => {
   describe('#createNativeFunction', () => {
     it('should bind a native function', () => {
