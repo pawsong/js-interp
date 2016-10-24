@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "JS-Interpreter written in TypeScript",
   "main": "lib",
-  "typings": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "tsc",
     "build:watch": "npm run build -- --watch",
