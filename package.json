@@ -8,16 +8,18 @@
     "build": "tsc",
     "build:watch": "npm run build -- --watch",
     "test": "TS_NODE_PROJECT=test mocha --compilers ts:ts-node/register",
-    "test:watch": "npm test -- --watch"
+    "test:watch": "npm test -- --watch",
+    "prepublish": "npm run build && npm test",
+    "preversion": "npm run prepublish"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pawsong/js-interpreter.git"
+    "url": "git+https://github.com/pawsong/js.ts.git"
   },
   "author": "Giff Song <giff.song@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/pawsong/js-interpreter/issues"
+    "url": "https://github.com/pawsong/js.ts/issues"
   },
   "dependencies": {
     "@types/acorn": "^1.0.31",
