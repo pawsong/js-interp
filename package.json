@@ -1,5 +1,5 @@
 {
-  "name": "js.ts",
+  "name": "js-interp",
   "version": "0.1.0",
   "description": "JS-Interpreter written in TypeScript",
   "main": "lib",
