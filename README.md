@@ -1,4 +1,4 @@
-# js-interpreter
+# js.ts
 
 **Caution: Currently this fork may contain many breaking changes and experimental features.**
 
