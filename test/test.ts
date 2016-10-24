@@ -147,6 +147,66 @@ describe('Global scope', () => {
   });
 });
 
+describe('Error', () => {
+  describe('throw', () => {
+    it('should throw the error', () => {
+      const code = `throw new Error('something wrong')`;
+      const interpreter = new Interpreter(code);
+      expect(() => interpreter.run()).to.throw(Error, 'something wrong');
+    });
+  });
+
+  describe('try...catch', () => {
+    it('should catch the error thrown in try statements', () => {
+      const code =
+`var error;
+try {
+  throw new Error('something wrong');
+} catch (err) {
+  error = err;
+}
+error;`;
+      const interpreter = new Interpreter(code);
+      interpreter.run();
+      expect(interpreter.value.parent).to.equal(interpreter.ERROR);
+      expect(interpreter.value.properties.message.type).to.equal('string');
+      expect(interpreter.value.properties.message.data).to.equal('something wrong');
+    });
+  });
+});
+
+describe('Interpreter', () => {
+  describe('#createNativeFunction', () => {
+    it('should bind a native function', () => {
+      const interpreter = new Interpreter('boundFunction()', (interpreter, scope) => {
+        interpreter.setProperty(scope, 'boundFunction', interpreter.createNativeFunction(() => {
+          return interpreter.createPrimitive(10);
+        }));
+      });
+
+      interpreter.run();
+
+      expect(interpreter.value.type).to.equal('number');
+      expect(interpreter.value.data).to.equal(10);
+    });
+  });
+
+  describe('#createAsyncFunction', () => {
+    it('should bind a async function', async () => {
+      const interpreter = new Interpreter('boundFunction()', (interpreter, scope) => {
+        interpreter.setProperty(scope, 'boundFunction', interpreter.createAsyncFunction(() => {
+          return waitFor(0).then(() => interpreter.createPrimitive(10));
+        }));
+      });
+
+      await waitUntil(() => interpreter.run());
+
+      expect(interpreter.value.type).to.equal('number');
+      expect(interpreter.value.data).to.equal(10);
+    });
+  });
+});
+
 describe('Examples', () => {
   describe('fibonacci', () => {
     it('should return array representing fibonacci series', () => {
