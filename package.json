@@ -14,7 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/pawsong/js-interpreter.git"
   },
-  "author": "",
+  "author": "Giff Song <giff.song@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/pawsong/js-interpreter/issues"
