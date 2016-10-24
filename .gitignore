@@ -1,5 +1,4 @@
 node_modules
-lib
-typings
-test/typings
-test/*.js
+npm-debug.log
+
+/lib
